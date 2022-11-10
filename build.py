@@ -997,7 +997,7 @@ COPY --chown=1000:1000 docker/sagemaker/serve /usr/bin/.
     # stage of the PyTorch backend
     if not FLAGS.enable_gpu and ('pytorch' in backends):
         df += '''
-RUN patchelf --add-needed /usr/local/cuda/lib64/stubs/libcublasLt.so backends/pytorch/libtorch_cuda.so
+RUN patchelf --add-needed /usr/local/cuda/lib64/stubs/libcublasLt.so.11 backends/pytorch/libtorch_cuda.so
 '''
 
     with open(os.path.join(ddir, dockerfile_name), "w") as dfile:
@@ -1098,7 +1098,7 @@ COPY --from=min_container /usr/local/cuda/lib64/stubs/libcusolver.so /usr/local/
 COPY --from=min_container /usr/local/cuda/lib64/stubs/libcurand.so /usr/local/cuda/lib64/stubs/.
 COPY --from=min_container /usr/local/cuda/lib64/stubs/libcufft.so /usr/local/cuda/lib64/stubs/.
 COPY --from=min_container /usr/local/cuda/lib64/stubs/libcublas.so /usr/local/cuda/lib64/stubs/.
-COPY --from=min_container /usr/local/cuda/lib64/stubs/libcublasLt.so /usr/local/cuda/lib64/stubs/.
+COPY --from=min_container /usr/local/cuda/lib64/stubs/libcublasLt.so /usr/local/cuda/lib64/stubs/libcublasLt.so.11
 
 RUN mkdir -p /usr/local/cuda/targets/{cuda_arch}-linux/lib
 COPY --from=min_container /usr/local/cuda/targets/{cuda_arch}-linux/lib/libcudart.so /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
@@ -1107,7 +1107,7 @@ COPY --from=min_container /usr/local/cuda/targets/{cuda_arch}-linux/lib/libnvToo
 
 COPY --from=min_container /usr/lib/{libs_arch}-linux-gnu/libcudnn.so /usr/lib/{libs_arch}-linux-gnu/libcudnn.so
 
-# patchelf is needed to add deps of libcublasLt.so to libtorch_cuda.so
+# patchelf is needed to add deps of libcublasLt.so.11 to libtorch_cuda.so
 RUN apt-get update && \
         apt-get install -y --no-install-recommends openmpi-bin patchelf
 
